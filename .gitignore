@@ -1,41 +1,160 @@
-# Compiled Lua sources
-luac.out
-
-# luarocks build files
-*.src.rock
-*.zip
-*.tar.gz
-
-# Object files
-*.o
-*.os
-*.ko
-*.obj
-*.elf
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
-*.def
-*.exp
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
-
+local function createGui(parent)
+	--ScreenGui1--
+	local ScreenGui1 = Instance.new("ScreenGui",parent)
+	ScreenGui1["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling
+	----ScreenGui1----
+	--Frame2--
+	local Frame2 = Instance.new("Frame",ScreenGui1)
+	Frame2["BackgroundTransparency"] = 0.699999988079071
+	Frame2["Position"] = UDim2.new(0.307272732, 0, 0.0615183115, 0)
+	Frame2["BorderColor3"] = Color3.new(0, 0, 0)
+	Frame2["Size"] = UDim2.new(0, 235, 0, 31)
+	Frame2["BorderSizePixel"] = 0
+	Frame2["BackgroundColor3"] = Color3.new(0.239216, 0.231373, 0.235294)
+	----Frame2----
+	--TextLabel3--
+	local TextLabel3 = Instance.new("TextLabel",Frame2)
+	TextLabel3["TextColor3"] = Color3.new(0, 0.666667, 0)
+	TextLabel3["Text"] = "FPS  : 60"
+	TextLabel3["TextXAlignment"] = Enum.TextXAlignment.Left
+	TextLabel3["TextStrokeTransparency"] = 0.5
+	TextLabel3["AnchorPoint"] = Vector2.new(0.5, 0.5)
+	TextLabel3["Font"] = Enum.Font.Code
+	TextLabel3["Name"] = "FPS"
+	TextLabel3["Position"] = UDim2.new(0.258600354, 0, 0.445487976, 0)
+	TextLabel3["Size"] = UDim2.new(0.442484081, 0, 0.313371718, 0)
+	TextLabel3["BackgroundTransparency"] = 1
+	TextLabel3["TextSize"] = 20
+	TextLabel3["BackgroundColor3"] = Color3.new(1, 1, 1)
+	----TextLabel3----
+	--TextLabel4--
+	local TextLabel4 = Instance.new("TextLabel",Frame2)
+	TextLabel4["TextColor3"] = Color3.new(0, 0.666667, 0)
+	TextLabel4["Text"] = "Ping : 100"
+	TextLabel4["TextXAlignment"] = Enum.TextXAlignment.Left
+	TextLabel4["TextStrokeTransparency"] = 0.5
+	TextLabel4["AnchorPoint"] = Vector2.new(0.5, 0.5)
+	TextLabel4["Font"] = Enum.Font.Code
+	TextLabel4["Name"] = "Ping"
+	TextLabel4["Position"] = UDim2.new(0.850669682, 0, 0.464662135, 0)
+	TextLabel4["Size"] = UDim2.new(0.636516511, 0, 0.316794097, 0)
+	TextLabel4["BackgroundTransparency"] = 1
+	TextLabel4["TextSize"] = 20
+	TextLabel4["BackgroundColor3"] = Color3.new(1, 1, 1)
+	----TextLabel4----
+	--Script5--
+	local Script5 = Instance.new("Script",ScreenGui1)
+	Script5["Name"] = "Handler"
+	----Script5----
+	--RemoteEvent6--
+	local RemoteEvent6 = Instance.new("RemoteEvent",Script5)
+	RemoteEvent6["Name"] = "GetPing"
+	----RemoteEvent6----
+	--Script7--
+	local Script7 = Instance.new("Script",ScreenGui1)
+	Script7["Name"] = "PingHandler"
+	----Script7----
+	--TextLabel8--
+	local TextLabel8 = Instance.new("TextLabel",ScreenGui1)
+	TextLabel8["TextColor3"] = Color3.new(0.0117647, 1, 1)
+	TextLabel8["BorderColor3"] = Color3.new(0, 0, 0)
+	TextLabel8["Text"] = "M"
+	TextLabel8["Font"] = Enum.Font.FredokaOne
+	TextLabel8["BackgroundTransparency"] = 1
+	TextLabel8["Position"] = UDim2.new(0.173636362, 0, 0.0405759178, 0)
+	TextLabel8["TextSize"] = 40
+	TextLabel8["Size"] = UDim2.new(0, 119, 0, 61)
+	TextLabel8["BorderSizePixel"] = 0
+	TextLabel8["BackgroundColor3"] = Color3.new(1, 1, 1)
+	----TextLabel8----
+	--TextLabel9--
+	local TextLabel9 = Instance.new("TextLabel",ScreenGui1)
+	TextLabel9["TextColor3"] = Color3.new(0.00784314, 0.905882, 0.709804)
+	TextLabel9["BorderColor3"] = Color3.new(0, 0, 0)
+	TextLabel9["Text"] = "ONT"
+	TextLabel9["Font"] = Enum.Font.FredokaOne
+	TextLabel9["BackgroundTransparency"] = 1
+	TextLabel9["Position"] = UDim2.new(0.235454559, 0, 0.0667539239, 0)
+	TextLabel9["TextSize"] = 25
+	TextLabel9["Size"] = UDim2.new(0, 61, 0, 26)
+	TextLabel9["BorderSizePixel"] = 0
+	TextLabel9["BackgroundColor3"] = Color3.new(1, 1, 1)
+	----TextLabel9----
+	spawn(function() --Source for Script5
+		local script = Script5
+		local RunService = game:GetService("RunService")
+		local PingRemote = script.GetPing
+		
+		local FPSCounter = script.Parent.Holder.FPS
+		local PingCounter = script.Parent.Holder.Ping
+		
+		local Colors = {
+			Good = Color3.fromRGB(0, 255, 0),
+			Normal = Color3.fromRGB(255, 255, 0),
+			Bad = Color3.fromRGB(255, 0, 0)
+		}
+		
+		function GetPing()
+			local Send = tick()
+			local Ping = nil
+		
+			PingRemote:FireServer()
+		
+			local Receive; Receive = PingRemote.OnClientEvent:Connect(function()
+				Ping = tick() - Send 
+			end)
+		
+			wait(1)
+			
+			Receive:Disconnect()
+		
+			return Ping or 999
+		end
+		
+		RunService.RenderStepped:Connect(function(TimeBetween)
+			local FPS = math.floor(1 / TimeBetween)
+			
+			FPSCounter.Text = "FPS  : "..tostring(FPS)
+			
+			if FPS >= 50 then
+				FPSCounter.TextColor3 = Colors.Good
+				script.Parent.Holder.Problematic_FPS.Visible = false
+			elseif FPS >= 30 then
+				FPSCounter.TextColor3 = Colors.Normal
+				script.Parent.Holder.Problematic_FPS.Visible = false
+			elseif FPS >= 1 then
+				FPSCounter.TextColor3 = Colors.Bad
+				script.Parent.Holder.Problematic_FPS.Visible = true
+			end
+		end)
+		
+		local PingThread = coroutine.wrap(function()
+			while wait() do
+				local Ping = tonumber(string.format("%.3f", GetPing() * 1000))
+				PingCounter.Text = "Ping : "..tostring(math.floor(Ping)).." ms"
+				
+				if Ping <= 100 then
+					PingCounter.TextColor3 = Colors.Good
+					script.Parent.Holder.Problematic_Ping.Visible = false
+				elseif Ping <= 300 then
+					PingCounter.TextColor3 = Colors.Normal
+					script.Parent.Holder.Problematic_Ping.Visible = false
+				elseif Ping > 300 then
+					PingCounter.TextColor3 = Colors.Bad
+					script.Parent.Holder.Problematic_Ping.Visible = true
+				end
+			end
+		end)
+		
+		PingThread()
+	end)
+	spawn(function() --Source for Script7
+		local script = Script7
+		local PingRemote = script.Parent.Handler.GetPing
+		
+		PingRemote.OnServerEvent:Connect(function(Player)
+			PingRemote:FireClient(Player)
+		end)
+	end)
+end
+createGui(game.CoreGui) --coregui by default you should but change it
